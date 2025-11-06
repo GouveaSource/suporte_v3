@@ -24,3 +24,12 @@ model User {
 
   @@map("users")
 }
+
+model RevokedToken {
+  id Int @id @default(autoincrement())
+
+  jti String @unique
+  revokedAt DateTime @default(now()) // <--- CORREÇÃO AQUI
+
+  @@map("revoked_tokens")
+}
