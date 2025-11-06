@@ -29,6 +29,8 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
       ACCESS_SECRET as jwt.Secret
     ) as TokenPayload;
 
+    (req as any).user = payload;
+    
     next();
 
   } catch (error) {
