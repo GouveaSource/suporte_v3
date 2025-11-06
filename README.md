@@ -19,7 +19,7 @@ Servidor da API REST construído com Node.js.
 -   **Linguagem:** TypeScript
 -   **ORM:** Prisma (conectado ao PostgreSQL)
 -   **Banco de Dados:** PostgreSQL
--   **Autenticação:** Criptografia de senha com Bcrypt
+-   **Autenticação:** JWT (Access/Refresh Tokens), Bcrypt (Hash), Blacklist (via Prisma)
 
 ### 1. Pré-requisitos (Backend)
 
@@ -46,13 +46,22 @@ Servidor da API REST construído com Node.js.
     ```
 
 4.  **Crie o arquivo de ambiente:**
-    Crie um arquivo chamado `.env` dentro da pasta `WebApi` e adicione a variável de conexão:
+    Crie um arquivo chamado `.env` dentro da pasta `WebApi` e adicione as variáveis:
     ```env
+    # Conexão do Banco (ajuste se necessário)
     DATABASE_URL="postgresql://admin:admin123@localhost:5432/suporte_db?schema=suporte"
+
+    # Segredos JWT (use valores fortes em produção)
+    JWT_ACCESS_SECRET="SEU_SEGREDO_SUPER_SECRETO_PARA_ACCESS_TOKEN"
+    JWT_REFRESH_SECRET="SEU_SEGREDO_DIFERENTE_PARA_REFRESH_TOKEN"
+
+    # Tempos de Expiração
+    JWT_ACCESS_EXPIRES_IN="5m"
+    JWT_REFRESH_EXPIRES_IN="7d"
     ```
 
 5.  **Rode as Migrações do Banco:**
-    Este comando aplica o schema do Prisma ao banco de dados:
+    Este comando aplica o schema (tabelas `users` e `revoked_tokens`) ao banco de dados:
     ```bash
     npx prisma migrate dev
     ```
