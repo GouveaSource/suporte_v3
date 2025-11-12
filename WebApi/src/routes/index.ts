@@ -11,6 +11,7 @@ import { SetorController } from "../controllers/SetorController";
 import { EmpresaController } from "../controllers/EmpresaController";
 import { CidadeController } from "../controllers/CidadeController";
 import { PatioController } from "../controllers/PatioController";
+import { ReboqueController } from "../controllers/ReboqueController";
 
 
 
@@ -78,4 +79,15 @@ router.get("/patios/ativos", PatioController.listPatiosAtivos); // Comum (IMPORT
 router.get("/patios/:id", PatioController.getPatioById); // Pega um Pátio (Admin)
 router.patch("/patios/:id", PatioController.updatePatio);
 router.delete("/patios/:id", PatioController.deletePatio);
+
+//Rotas Reboques
+router.post("/reboques", ReboqueController.createReboque);
+router.get("/reboques", ReboqueController.listAllReboques); // Admin
+router.get("/reboques/ativos", ReboqueController.listReboquesAtivos); // Comum
+router.patch("/reboques/:id", ReboqueController.updateReboque);
+router.delete("/reboques/:id", ReboqueController.deleteReboque);
+
+//Rotas de Associar acessorio
+router.patch("/reboques/:id/associar-acessorio", ReboqueController.associarAcessorio);
+router.patch("/reboques/:id/desassociar-acessorio", ReboqueController.desassociarAcessorio);
 export default router;
