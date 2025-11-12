@@ -8,6 +8,7 @@ import { checkRole } from "../middlewares/roleMiddleware";
 import { AcessorioController } from "../controllers/AcessoriosController";
 import { OrgaoController } from "../controllers/OrgaosController";
 import { SetorController } from "../controllers/SetorController";
+import { EmpresaController } from "../controllers/EmpresaController";
 
 
 
@@ -53,5 +54,12 @@ router.get("/setores", SetorController.listAllSetores); // Rota do Admin
 router.get("/setores/ativos", SetorController.listSetoresAtivos); // Rota do Comum
 router.patch("/setores/:id", SetorController.updateSetor);
 router.delete("/setores/:id", SetorController.deleteSetor);
+
+//Rotas Empresas
+router.post("/empresas", EmpresaController.createEmpresa);
+router.get("/empresas", EmpresaController.listAllEmpresas); // Rota do Admin
+router.get("/empresas/ativas", EmpresaController.listEmpresasAtivas); // Rota do Comum
+router.patch("/empresas/:id", EmpresaController.updateEmpresa);
+router.delete("/empresas/:id", EmpresaController.deleteEmpresa);
 
 export default router;
