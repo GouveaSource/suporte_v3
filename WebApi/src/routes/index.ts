@@ -7,6 +7,7 @@ import { Role } from "@prisma/client";
 import { checkRole } from "../middlewares/roleMiddleware";
 import { AcessorioController } from "../controllers/AcessoriosController";
 import { OrgaoController } from "../controllers/OrgaosController";
+import { SetorController } from "../controllers/SetorController";
 
 
 
@@ -45,4 +46,12 @@ router.get("/orgaos", OrgaoController.listAllOrgaos); // Rota do Admin
 router.get("/orgaos/ativos", OrgaoController.listOrgaosAtivos); // Rota do Comum
 router.patch("/orgaos/:id", OrgaoController.updateOrgao);
 router.delete("/orgaos/:id", OrgaoController.deleteOrgao);
+
+//Rotas Setor
+router.post("/setores", SetorController.createSetor);
+router.get("/setores", SetorController.listAllSetores); // Rota do Admin
+router.get("/setores/ativos", SetorController.listSetoresAtivos); // Rota do Comum
+router.patch("/setores/:id", SetorController.updateSetor);
+router.delete("/setores/:id", SetorController.deleteSetor);
+
 export default router;
