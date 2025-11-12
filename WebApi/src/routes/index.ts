@@ -13,6 +13,7 @@ import { CidadeController } from "../controllers/CidadeController";
 import { PatioController } from "../controllers/PatioController";
 import { ReboqueController } from "../controllers/ReboqueController";
 import { GuincheiroController } from "../controllers/GuincheiroController";
+import { AcionamentoController } from "../controllers/AcionamentoController";
 
 
 
@@ -23,6 +24,8 @@ router.get("/health", ExampleController.health);
 router.post("/login", AuthController.login);
 router.post("/refresh", AuthController.refreshToken);
 router.post("/logout", AuthController.logout);
+
+router.get("/acionamento/buscar", AcionamentoController.buscarGuincheiros);
 
 
 router.post("/users", UserController.createUser);
