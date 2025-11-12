@@ -128,12 +128,16 @@ model Cidade {
   id     String @id @default(uuid())
   nome   String
   estado String
-  status Status @default(ATIVO) //
+  status Status @default(ATIVO)
 
   patioId String
   patio   Patio  @relation(fields: [patioId], references: [id])
   
   guincheiros Guincheiro[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@map("cidades")
 }
 
@@ -141,12 +145,26 @@ model Patio {
   id          String @id @default(uuid())
   nome        String @unique
   telefone    String?
+  email       String?
   responsavel String?
   status      Status @default(ATIVO)
+  
+  // Endereço
+  rua         String?
+  numero      String?
+  cep         String?
+  bairro      String?
+  referencia  String?
+  linkMaps    String? 
 
+  // Relações
   cidades     Cidade[]
   orgaos      Orgao[]
   guincheiros Guincheiro[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@map("patios")
 }
 

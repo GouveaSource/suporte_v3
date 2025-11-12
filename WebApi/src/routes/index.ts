@@ -9,6 +9,8 @@ import { AcessorioController } from "../controllers/AcessoriosController";
 import { OrgaoController } from "../controllers/OrgaosController";
 import { SetorController } from "../controllers/SetorController";
 import { EmpresaController } from "../controllers/EmpresaController";
+import { CidadeController } from "../controllers/CidadeController";
+import { PatioController } from "../controllers/PatioController";
 
 
 
@@ -62,4 +64,18 @@ router.get("/empresas/ativas", EmpresaController.listEmpresasAtivas); // Rota do
 router.patch("/empresas/:id", EmpresaController.updateEmpresa);
 router.delete("/empresas/:id", EmpresaController.deleteEmpresa);
 
+//Rotas Cidades
+router.post("/cidades", CidadeController.createCidade);
+router.get("/cidades", CidadeController.listAllCidades); // Admin
+router.get("/cidades/ativas", CidadeController.listCidadesAtivas); // Comum
+router.patch("/cidades/:id", CidadeController.updateCidade);
+router.delete("/cidades/:id", CidadeController.deleteCidade);
+
+//Rotas Patios
+router.post("/patios", PatioController.createPatio);
+router.get("/patios", PatioController.listAllPatios); // Admin
+router.get("/patios/ativos", PatioController.listPatiosAtivos); // Comum (IMPORTANTE)
+router.get("/patios/:id", PatioController.getPatioById); // Pega um Pátio (Admin)
+router.patch("/patios/:id", PatioController.updatePatio);
+router.delete("/patios/:id", PatioController.deletePatio);
 export default router;
