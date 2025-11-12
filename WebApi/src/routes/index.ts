@@ -12,6 +12,7 @@ import { EmpresaController } from "../controllers/EmpresaController";
 import { CidadeController } from "../controllers/CidadeController";
 import { PatioController } from "../controllers/PatioController";
 import { ReboqueController } from "../controllers/ReboqueController";
+import { GuincheiroController } from "../controllers/GuincheiroController";
 
 
 
@@ -90,4 +91,21 @@ router.delete("/reboques/:id", ReboqueController.deleteReboque);
 //Rotas de Associar acessorio
 router.patch("/reboques/:id/associar-acessorio", ReboqueController.associarAcessorio);
 router.patch("/reboques/:id/desassociar-acessorio", ReboqueController.desassociarAcessorio);
+router.patch("/reboques/:id/sincronizar-acessorios", ReboqueController.sincronizarAcessorios);
+
+//Rotas Guincheiros
+router.post("/guincheiros", GuincheiroController.createGuincheiro);
+router.get("/guincheiros", GuincheiroController.listAllGuincheiros); // Admin
+router.get("/guincheiros/ativos", GuincheiroController.listGuincheirosAtivos); // Comum
+router.get("/guincheiros/:id", GuincheiroController.getGuincheiroById); // Admin (detalhes)
+router.patch("/guincheiros/:id", GuincheiroController.updateGuincheiro);
+router.delete("/guincheiros/:id", GuincheiroController.deleteGuincheiro);
+
+router.patch("/guincheiros/:id/associar-reboque", GuincheiroController.associarReboque);
+router.patch("/guincheiros/:id/desassociar-reboque", GuincheiroController.desassociarReboque);
+router.patch("/guincheiros/:id/associar-patio", GuincheiroController.associarPatio);
+router.patch("/guincheiros/:id/desassociar-patio", GuincheiroController.desassociarPatio);
+router.patch("/guincheiros/:id/associar-orgao", GuincheiroController.associarOrgao);
+router.patch("/guincheiros/:id/desassociar-orgao", GuincheiroController.desassociarOrgao);
+router.patch("/guincheiros/:id/sincronizar-cidades", GuincheiroController.sincronizarCidades);
 export default router;

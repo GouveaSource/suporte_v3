@@ -22,13 +22,20 @@ const updateReboqueSchema = z.object({
   status: z.nativeEnum(Status, { message: "Status deve ser ATIVO ou INATIVO" }).optional(),
 });
 
-const acessorioRelationSchema = z.object({
-  acessorioId: z.string().uuid({ message: "O ID do acessório é obrigatório" }),
+const syncAcessoriosSchema = z.object({
+  acessoriosIds: z.array(z.string().uuid(), {
+    message: "A lista de IDs de acessórios deve ser um array de UUIDs",
+  }),
 });
 
-
 export class ReboqueController {
-  
+  static associarAcessorio(arg0: string, associarAcessorio: any) {
+      throw new Error("Method not implemented.");
+  }
+  static desassociarAcessorio(arg0: string, desassociarAcessorio: any) {
+      throw new Error("Method not implemented.");
+  }
+
   static async createReboque(req: Request, res: Response) {
     try {
       const data = createReboqueSchema.parse(req.body);
@@ -122,51 +129,22 @@ export class ReboqueController {
     }
   }
 
-  static async associarAcessorio(req: Request, res: Response) {
-    try {
-      const { id } = req.params; // ID do Reboque
-      const { acessorioId } = acessorioRelationSchema.parse(req.body);
-
-      const [reboque, acessorio] = await Promise.all([
-        prisma.reboque.findUnique({ where: { id } }),
-        prisma.acessorio.findUnique({ where: { id: acessorioId } }),
-      ]);
-
-      if (!reboque) return res.status(404).json({ message: "Reboque não encontrado" });
-      if (!acessorio) return res.status(404).json({ message: "Acessório não encontrado" });
-
-      const reboqueAtualizado = await prisma.reboque.update({
-        where: { id },
-        data: {
-          acessorios: {
-            connect: { id: acessorioId },
-          },
-        },
-        include: { acessorios: true },
-      });
-
-      return res.status(200).json(reboqueAtualizado);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Erro de validação", errors: error.issues });
-      }
-      return res.status(500).json({ message: "Erro interno no servidor" });
-    }
-  }
-
-  static async desassociarAcessorio(req: Request, res: Response) {
+  static async sincronizarAcessorios(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { acessorioId } = acessorioRelationSchema.parse(req.body);
+      const { acessoriosIds } = syncAcessoriosSchema.parse(req.body);
 
       const reboque = await prisma.reboque.findUnique({ where: { id } });
-      if (!reboque) return res.status(404).json({ message: "Reboque não encontrado" });
+      if (!reboque) {
+        return res.status(404).json({ message: "Reboque não encontrado" });
+      }
+      const acessoriosFormatados = acessoriosIds.map((aid) => ({ id: aid }));
 
       const reboqueAtualizado = await prisma.reboque.update({
         where: { id },
         data: {
           acessorios: {
-            disconnect: { id: acessorioId },
+            set: acessoriosFormatados,
           },
         },
         include: { acessorios: true },
@@ -174,9 +152,7 @@ export class ReboqueController {
 
       return res.status(200).json(reboqueAtualizado);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Erro de validação", errors: error.issues });
-      }
+      if (error instanceof z.ZodError) return res.status(400).json({ message: "Erro de validação", errors: error.issues });
       return res.status(500).json({ message: "Erro interno no servidor" });
     }
   }
