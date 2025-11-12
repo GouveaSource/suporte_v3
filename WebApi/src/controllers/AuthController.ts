@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
  interface TokenPayload {
     userId: string;
     role: string;
+    status: string;
     jti?: string;
   }
 
@@ -28,6 +29,10 @@ export class AuthController {
 
       if (!user) {
         return res.status(401).json({ message: "Email ou senha inválidos" });
+      }
+
+      if (user.status === "INATIVO") {
+        return res.status(403).json({ message: "Utilizador inativo." });
       }
 
       const isPasswordValid = await compare(password, user.password_hash);
@@ -54,6 +59,7 @@ export class AuthController {
       const payload: TokenPayload = {
         userId: user.id,
         role: user.role,
+        status: user.status,
       };
 
       const accessToken = jwt.sign(
@@ -121,6 +127,7 @@ export class AuthController {
       const newPayload: TokenPayload = {
         userId: payload.userId,
         role: payload.role,
+        status: payload.status,
       };
 
       const accessToken = jwt.sign(

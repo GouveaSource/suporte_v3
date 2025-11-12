@@ -7,11 +7,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// --- ENUMS DE NEGÓCIO ---
+
 enum Role {
   COMUM
   ADMIN
   ADMMaster
 }
+
+enum TipoReboque {
+  LEVE
+  PESADO
+}
+
+enum CategoriaCNH {
+  A
+  B
+  C
+  D
+  E
+  AB
+  AC
+  AD
+  AE
+}
+
+enum Status {
+  ATIVO
+  INATIVO
+}
+
+// --- MODELOS DE AUTENTICAÇÃO E UTILIZADORES ---
 
 model User {
   id            String   @id @default(uuid())
@@ -19,6 +45,7 @@ model User {
   nome          String
   password_hash String
   role          Role     @default(COMUM)
+  status        Status   @default(ATIVO)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -26,10 +53,110 @@ model User {
 }
 
 model RevokedToken {
-  id Int @id @default(autoincrement())
-
-  jti String @unique
-  revokedAt DateTime @default(now()) // <--- CORREÇÃO AQUI
-
+  id        Int      @id @default(autoincrement())
+  jti       String   @unique
+  revokedAt DateTime @default(now())
   @@map("revoked_tokens")
+}
+
+// --- LÓGICA DO SISTEMA ---
+
+model Setor {
+  id          String   @id @default(uuid())
+  nome        String
+  telefone    String?
+  ramal       String?
+  responsavel String?
+  status      Status   @default(ATIVO)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("setores")
+}
+
+model Acessorio {
+  id     String @id @default(uuid())
+  nome   String @unique
+  status Status @default(ATIVO)
+
+  reboques Reboque[]
+  @@map("acessorios")
+}
+
+model Empresa {
+  id     String @id @default(uuid())
+  nome   String
+  cnpj   String @unique
+  status Status @default(ATIVO)
+
+  reboques    Reboque[]
+  guincheiros Guincheiro[]
+  @@map("empresas")
+}
+
+model Reboque {
+  id      String      @id @default(uuid())
+  placa   String      @unique
+  modelo  String
+  tipo    TipoReboque
+  status  Status      @default(ATIVO)
+
+  empresaId String
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+  
+  acessorios  Acessorio[]
+  guincheiros Guincheiro[]
+  @@map("reboques")
+}
+
+model Orgao {
+  id     String @id @default(uuid())
+  nome   String @unique
+  status Status @default(ATIVO)
+
+  patios      Patio[]
+  guincheiros Guincheiro[]
+  @@map("orgaos")
+}
+
+model Cidade {
+  id     String @id @default(uuid())
+  nome   String
+  estado String
+  status Status @default(ATIVO) //
+
+  patioId String
+  patio   Patio  @relation(fields: [patioId], references: [id])
+  
+  guincheiros Guincheiro[]
+  @@map("cidades")
+}
+
+model Patio {
+  id          String @id @default(uuid())
+  nome        String @unique
+  telefone    String?
+  responsavel String?
+  status      Status @default(ATIVO)
+
+  cidades     Cidade[]
+  orgaos      Orgao[]
+  guincheiros Guincheiro[]
+  @@map("patios")
+}
+
+model Guincheiro {
+  id              String       @id @default(uuid())
+  nome            String
+  telefone        String
+  cnh_categoria   CategoriaCNH
+  status          Status       @default(ATIVO)
+
+  empresaId String
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+
+  reboques Reboque[]
+  patios   Patio[]
+  cidades  Cidade[]
+  orgaos   Orgao[]
+  @@map("guincheiros")
 }
