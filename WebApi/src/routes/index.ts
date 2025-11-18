@@ -18,6 +18,7 @@ import { PatioController } from "../controllers/PatioController";
 import { ReboqueController } from "../controllers/ReboqueController";
 import { GuincheiroController } from "../controllers/GuincheiroController";
 import { AcionamentoController } from "../controllers/AcionamentoController";
+import { ConsultaController } from "../controllers/ConsultaController";
 
 const router = Router();
 
@@ -57,6 +58,8 @@ router.get("/guincheiros/ativos", authMiddleware, GuincheiroController.listGuinc
 // ====================================================================
 // --- GRUPO 3: Rotas de ADMIN (Criar, Editar, Ver Tudo) ---
 // ====================================================================
+
+router.get("/consulta/cnpj/:cnpj", authMiddleware, checkRole(adminRoles), ConsultaController.consultarCnpj);
 
 // --- Utilizadores (Gestão) ---
 router.get("/users", authMiddleware, checkRole(adminRoles), UserController.listUsers);

@@ -13,6 +13,7 @@
   "description": "API de suporte em Node.js + Express + TypeScript",
   "dependencies": {
     "@prisma/client": "^6.19.0",
+    "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "cpf-cnpj-validator": "^1.0.3",
