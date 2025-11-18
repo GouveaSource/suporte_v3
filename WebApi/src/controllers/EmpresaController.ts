@@ -2,18 +2,29 @@ import { Request, Response } from "express";
 import { prisma } from "../config/prismaClient";
 import { Status } from "@prisma/client";
 import { z } from "zod";
+import { cnpj as CnpjValidator } from "cpf-cnpj-validator";
 
 const createEmpresaSchema = z.object({
-  nome: z.string()
-    .min(3, { message: "O nome é obrigatório e deve ter no mínimo 3 caracteres" }),
-  
-  cnpj: z.string()
-    .length(14, { message: "O CNPJ é obrigatório e deve ter 14 dígitos (sem máscara)" }),
+  nome: z.string().min(3, {
+    message: "O nome é obrigatório e deve ter no mínimo 3 caracteres",
+  }),
+  cnpj: z
+    .string()
+    .length(14, { message: "O CNPJ é obrigatório e deve ter 14 dígitos (sem máscara)" })
+    .refine(CnpjValidator.isValid, {
+      message: "CNPJ inválido",
+    }),
 });
 
 const updateEmpresaSchema = z.object({
-  nome: z.string().min(3, { message: "O nome deve ter no mínimo 3 caracteres" }).optional(),
-  cnpj: z.string().length(14, { message: "O CNPJ deve ter 14 dígitos" }).optional(),
+  nome: z.string().min(3).optional(),
+  cnpj: z
+    .string()
+    .length(14)
+    .refine(CnpjValidator.isValid, {
+      message: "CNPJ inválido",
+    })
+    .optional(),
   status: z.nativeEnum(Status).optional(),
 });
 
